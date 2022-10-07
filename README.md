@@ -4,5 +4,5 @@ a simple web application for a project management system using servlets and exis
 - Framework used - FlyWay, JSTL
 -	Patterns used - Front Controller, MVC, DAO/DTO, Singletone
 For proper work of code from this repository please make such steps:
-1.insert into file application.properties (wich located in root derictory) initial settings of your database;
-2.set such enviroment variables: dbusername and dbPassword, which You will use for the database.
+ 1. insert into file application.properties (wich located in root derictory) initial settings of your database;
+ 2. set such enviroment variables: dbusername and dbPassword, which You will use for the database.
