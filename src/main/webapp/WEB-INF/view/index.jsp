@@ -29,7 +29,7 @@
                  <ul class="dropdown-menu">
                     <li><a href="/project/list_all_projects">List of all projects</a></li>
                     <li><a href="/project/list_project_developers">List project developers</a></li>
-                    <li><a href="/project/project_expenses">Project ewxpenses: sum of salary all its developers</a></li>
+                    <li><a href="/project/project_expenses">Project expenses: sum of salary all its developers</a></li>
                     <li><a href="/project/all_projects_in_special_format">List of projects in special format</a></li>
                     <li><a href="/project/add">Add a project</a></li>
                     <li><a href="/project/update">Update a project</a></li>
