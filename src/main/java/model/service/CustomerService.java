@@ -44,15 +44,11 @@ public  CustomerService (CustomerStorage customerStorage) {
         return customerDaoFromDb.map(CustomerConverter::from);
     }
 
-    public void findAllCustomers() {
-        List<String> result = new ArrayList<>();
-        for (Optional<CustomerDao> customerDao : customerStorage.findAll()) {
-            customerDao.ifPresent(dao -> result.add(String.format("\t%d. %s, rating -  %s",
-                    dao.getCustomer_id(),
-                    dao.getCustomer_name(),
-                    dao.getReputation())));
-        }
-       // Output.getInstance().print(result);
+    public List<CustomerDto> findAllCustomers() {
+        return customerStorage.findAll()
+                .stream().map(Optional::get)
+                .map(CustomerConverter::from)
+                .toList();
     }
 
     public void deleteCustomer (String name) {

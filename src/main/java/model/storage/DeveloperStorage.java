@@ -180,7 +180,7 @@ public class DeveloperStorage implements Storage<DeveloperDao>{
                 String lastName = rs.getString("lastname");
                 String firstName = rs.getString("firstname");
                 String level = rs.getString("level");
-                developersNames.add(String.format("%s %s - level - %s",
+                developersNames.add(String.format("%s %s - %s",
                         lastName, firstName, level));
             }
         }
@@ -200,7 +200,7 @@ public class DeveloperStorage implements Storage<DeveloperDao>{
                 String lastName = rs.getString("lastname");
                 String firstName = rs.getString("firstname");
                 String language = rs.getString("language");
-                developersNames.add(String.format("%s %s - language - %s",
+                developersNames.add(String.format("%s %s -  %s",
                         lastName, firstName, language));
             }
         }

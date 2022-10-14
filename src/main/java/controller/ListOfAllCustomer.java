@@ -25,6 +25,7 @@ import java.util.Properties;
 public class ListOfAllCustomer extends HttpServlet {
     private static DatabaseManagerConnector managerConnector;
     private static CustomerStorage customerStorage;
+    private static CustomerService customerService;
 
     @Override
     public void init() throws ServletException {
@@ -36,6 +37,7 @@ public class ListOfAllCustomer extends HttpServlet {
         new Migration(managerConnector).initDb();
         try {
             customerStorage = new CustomerStorage(managerConnector);
+            customerService = new CustomerService(customerStorage);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -43,10 +45,7 @@ public class ListOfAllCustomer extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        List<CustomerDto> customers = customerStorage.findAll()
-                .stream().map(Optional::get)
-                .map(CustomerConverter::from)
-                .toList();
+        List<CustomerDto> customers = customerService.findAllCustomers();
         req.setAttribute("customers", customers);
         req.getRequestDispatcher("/WEB-INF/view/listAllCustomers.jsp").forward(req, resp);
 

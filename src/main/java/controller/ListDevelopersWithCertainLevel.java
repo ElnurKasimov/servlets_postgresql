@@ -3,9 +3,7 @@ package controller;
 import model.config.DatabaseManagerConnector;
 import model.config.Migration;
 import model.config.PropertiesConfig;
-import model.dto.DeveloperDto;
 import model.service.*;
-import model.service.converter.DeveloperConverter;
 import model.storage.*;
 
 import javax.servlet.ServletException;
@@ -16,11 +14,10 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
-import java.util.Optional;
 import java.util.Properties;
 
-@WebServlet(urlPatterns = "/developer/list_all_developers")
-public class ListOfAllDevelopers extends HttpServlet {
+@WebServlet(urlPatterns = "/developer/level_developers")
+public class ListDevelopersWithCertainLevel extends HttpServlet {
     private static DatabaseManagerConnector managerConnector;
     private static DeveloperStorage developerStorage;
     private static DeveloperService developerService;
@@ -65,9 +62,11 @@ public class ListOfAllDevelopers extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        List<DeveloperDto> developers = developerService.findAllDevelopers();
-        req.setAttribute("developers", developers);
-        req.getRequestDispatcher("/WEB-INF/view/listAllDevelopers.jsp").forward(req, resp);
+        String level = req.getParameter("level");
+        List<String> developersList = developerService.getListNamesDevelopersWithCertainLevel(level);
+        req.setAttribute("level", level);
+        req.setAttribute("list", developersList);
+        req.getRequestDispatcher("/WEB-INF/view/listDevelopersWithCertainLevel.jsp").forward(req, resp);
 
     }
 }

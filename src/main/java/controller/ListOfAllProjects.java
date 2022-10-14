@@ -25,9 +25,18 @@ import java.util.Properties;
 @WebServlet(urlPatterns = "/project/list_all_projects")
 public class ListOfAllProjects extends HttpServlet {
     private static DatabaseManagerConnector managerConnector;
+    private static DeveloperStorage developerStorage;
+    private static DeveloperService developerService;
     private static CompanyStorage companyStorage;
+    private static CompanyService companyService;
     private static CustomerStorage customerStorage;
+    private static CustomerService customerService;
     private static ProjectStorage projectStorage;
+    private static ProjectService projectService;
+    private static SkillService skillService;
+    private static SkillStorage skillStorage;
+    private static RelationStorage relationStorage;
+    private static RelationService relationService;
 
     @Override
     public void init() throws ServletException {
@@ -38,9 +47,18 @@ public class ListOfAllProjects extends HttpServlet {
         managerConnector = new DatabaseManagerConnector(properties, dbUsername, dbPassword);
         new Migration(managerConnector).initDb();
         try {
+            skillStorage = new SkillStorage(managerConnector);
+            skillService = new SkillService(skillStorage);
+            relationStorage = new RelationStorage(managerConnector);
+            relationService = new RelationService(relationStorage);
             companyStorage = new CompanyStorage(managerConnector);
+            companyService = new CompanyService(companyStorage);
             customerStorage = new CustomerStorage(managerConnector);
+            customerService = new CustomerService(customerStorage);
+            developerStorage = new DeveloperStorage(managerConnector, companyStorage, skillStorage);
             projectStorage = new ProjectStorage(managerConnector, companyStorage, customerStorage);
+            projectService = new ProjectService(projectStorage, developerStorage, companyService,
+                    customerService, relationService);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -48,14 +66,7 @@ public class ListOfAllProjects extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        List<ProjectDto> projects = projectStorage.findAll().stream()
-                .map(Optional::get)
-                .map(ProjectDao::getProject_name)
-                .map(name -> projectStorage.findByName(name))
-                .map(project -> project.get())
-                .map(ProjectConverter::from)
-                .toList();
-
+        List<ProjectDto> projects = projectService.findAllProjects();
         req.setAttribute("projects", projects);
         req.getRequestDispatcher("/WEB-INF/view/listAllProjects.jsp").forward(req, resp);
 

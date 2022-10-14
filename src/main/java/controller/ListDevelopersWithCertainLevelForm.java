@@ -12,8 +12,8 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Properties;
 
-@WebServlet(urlPatterns = "/developer/developer_info/form")
-public class DeveloperInfoForm extends HttpServlet {
+@WebServlet(urlPatterns = "/developer/level_developers/form")
+public class ListDevelopersWithCertainLevelForm extends HttpServlet {
     private static DatabaseManagerConnector managerConnector;
 
     @Override
@@ -28,7 +28,7 @@ public class DeveloperInfoForm extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-               req.getRequestDispatcher("/WEB-INF/view/developerInfoForm.jsp").forward(req, resp);
+               req.getRequestDispatcher("/WEB-INF/view/listDevelopersWithCertainLevelForm.jsp").forward(req, resp);
     }
 
 }

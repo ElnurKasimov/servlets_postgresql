@@ -62,16 +62,11 @@ public DeveloperService (DeveloperStorage developerStorage, ProjectService proje
                          " Please enter correct data", developerDto.getLastName(), developerDto.getFirstName());
     }
 
-    public void findAllDevelopers() {
-        List<String> result = new ArrayList<>();
-        for (Optional<DeveloperDao> developerDao : developerStorage.findAll()) {
-            developerDao.ifPresent(dao -> result.add(String.format("\t%d. %s %s, works in company %s",
-                    dao.getDeveloper_id(),
-                    dao.getLastName(),
-                    dao.getFirstName(),
-                    dao.getCompanyDao().getCompany_name())));
-        }
-       // Output.getInstance().print(result);
+    public List<DeveloperDto> findAllDevelopers() {
+         return  developerStorage.findAll()
+                .stream().map(Optional::get)
+                .map(DeveloperConverter::from)
+                .toList();
     }
 
     public DeveloperDto getByName(String lastName, String firstName) {
@@ -108,18 +103,12 @@ public DeveloperService (DeveloperStorage developerStorage, ProjectService proje
         return developerStorage.isExist(lastName, firstName);
     }
 
-    public void getListNamesDevelopersWithCertainLanguage(String language) {
-        List<String> result = new ArrayList<>();
-        result.add(String.format("\tThere are such developers who program in '%s' in the database : ", language));
-        developerStorage.getNamesListOfCertainLanguageDevelopers(language).forEach(name -> result.add("\t\t" + name + ","));
-       // Output.getInstance().print(result);
+    public List<String> getListNamesDevelopersWithCertainLanguage(String language) {
+        return  developerStorage.getNamesListOfCertainLanguageDevelopers(language);
     };
 
-    public void getListNamesDevelopersWithCertainLevel(String level) {
-        List<String> result = new ArrayList<>();
-        result.add(String.format("\tThere are such developers who has '%s' position in the database: ", level));
-        developerStorage.getNamesListOfCertainLevelDevelopers(level).forEach(name -> result.add("\t\t" + name + ","));
-      //  Output.getInstance().print(result);
+    public List<String> getListNamesDevelopersWithCertainLevel(String level) {
+        return  developerStorage.getNamesListOfCertainLevelDevelopers(level);
     };
 
     public List<String> getDevelopersNamesByProjectName(String projectName) {

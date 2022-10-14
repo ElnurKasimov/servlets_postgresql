@@ -25,6 +25,7 @@ import java.util.Properties;
 public class ListOfAllCompanies extends HttpServlet {
     private static DatabaseManagerConnector managerConnector;
     private static CompanyStorage companyStorage;
+    private static CompanyService companyService;
 
     @Override
     public void init() throws ServletException {
@@ -36,6 +37,7 @@ public class ListOfAllCompanies extends HttpServlet {
         new Migration(managerConnector).initDb();
         try {
             companyStorage = new CompanyStorage(managerConnector);
+            companyService = new CompanyService(companyStorage);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -43,10 +45,7 @@ public class ListOfAllCompanies extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        List<CompanyDto> companies = companyStorage.findAll()
-                .stream().map(Optional::get)
-                .map(CompanyConverter::from)
-                .toList();
+        List<CompanyDto> companies = companyService.findAllCompanies();
         req.setAttribute("companies", companies);
         req.getRequestDispatcher("/WEB-INF/view/listAllCompanies.jsp").forward(req, resp);
 

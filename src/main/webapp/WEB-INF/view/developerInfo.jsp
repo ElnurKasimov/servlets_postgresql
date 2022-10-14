@@ -17,7 +17,6 @@
             <input type="text" id="firstName" name="firstName"><br>
             <button type="submit">Find</button>
         </form>
-
         <c:choose>
           <c:when test="${isPresent}">
               <c:out value="Information about developer "/> <b><c:out value="${developer.lastName} ${developer.firstName} : "/></b><br>
@@ -36,6 +35,5 @@
              <c:out value="There is not developer by specified name. Please enter correct data."/>
           </c:otherwise>
         </c:choose>
-
     </body>
 </html>

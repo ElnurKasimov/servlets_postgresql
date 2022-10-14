@@ -36,17 +36,14 @@ public class ProjectService {
         return projectStorage.isExist(projectName);
     }
 
-    public List<String> getAllProjects() {
-        List<Optional<ProjectDao>> projectDaoList = projectStorage.findAll();
-        List<String> result = new ArrayList<>();
-        for (Optional<ProjectDao> projectDao : projectDaoList) {
-            projectDao.ifPresent(dao -> result.add(String.format("\t%d. %s, budget - %d, launched  %s",
-                    dao.getProject_id(),
-                    dao.getProject_name(),
-                    dao.getCost(),
-                    dao.getStart_date().toString())));
-        }
-        return result;
+    public List<ProjectDto> findAllProjects() {
+         return projectStorage.findAll().stream()
+                .map(Optional::get)
+                .map(ProjectDao::getProject_name)
+                .map(name -> projectStorage.findByName(name))
+                .map(project -> project.get())
+                .map(ProjectConverter::from)
+                .toList();
     }
 
     public List<String> getProjectsNameByDeveloperId(long id) {
