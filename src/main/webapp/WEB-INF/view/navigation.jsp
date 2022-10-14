@@ -8,7 +8,7 @@
       <li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" href="#">Developers <span class="caret"></span></a>
         <ul class="dropdown-menu">
           <li><a href="/developer/list_all_developers">List of  all developers</a></li>
-          <li><a href="/developer/developer_info">Full information about a developer</a></li>
+          <li><a href="/developer/developer_info/form">Full information about a developer</a></li>
           <li><a href="/developer/language_developers">List developers with certain language </a></li>
           <li><a href="/developer/level_developers">List developers with certain level</a></li>
           <li><a href="/developer/add">Add developer</a></li>

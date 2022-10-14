@@ -74,6 +74,10 @@ public DeveloperService (DeveloperStorage developerStorage, ProjectService proje
        // Output.getInstance().print(result);
     }
 
+    public DeveloperDto getByName(String lastName, String firstName) {
+        return developerStorage.findByName(lastName, firstName).map(DeveloperConverter::from).orElse(null);
+    }
+
     public void getInfoByName(String lastName, String firstName) {
         List<String> result = new ArrayList<>();
         DeveloperDto developerDto = DeveloperConverter.from(developerStorage.findByName(lastName, firstName).get());

@@ -3,12 +3,8 @@ package controller;
 import model.config.DatabaseManagerConnector;
 import model.config.Migration;
 import model.config.PropertiesConfig;
-import model.dao.ProjectDao;
 import model.dto.DeveloperDto;
-import model.dto.ProjectDto;
 import model.service.*;
-import model.service.converter.DeveloperConverter;
-import model.service.converter.ProjectConverter;
 import model.storage.*;
 
 import javax.servlet.ServletException;
@@ -18,16 +14,25 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.Properties;
 
-@WebServlet(urlPatterns = "/project/list_all_projects")
-public class ListOfAllProjects extends HttpServlet {
+@WebServlet(urlPatterns = "/developer/developer_info/form")
+public class DeveloperInfoForm extends HttpServlet {
     private static DatabaseManagerConnector managerConnector;
+    private static DeveloperStorage developerStorage;
+    private static DeveloperService developerService;
     private static CompanyStorage companyStorage;
+    private static CompanyService companyService;
     private static CustomerStorage customerStorage;
+    private static CustomerService customerService;
     private static ProjectStorage projectStorage;
+    private static ProjectService projectService;
+    private static SkillService skillService;
+    private static SkillStorage skillStorage;
+    private static RelationStorage relationStorage;
+    private static RelationService relationService;
 
     @Override
     public void init() throws ServletException {
@@ -38,9 +43,20 @@ public class ListOfAllProjects extends HttpServlet {
         managerConnector = new DatabaseManagerConnector(properties, dbUsername, dbPassword);
         new Migration(managerConnector).initDb();
         try {
+            skillStorage = new SkillStorage(managerConnector);
+            skillService = new SkillService(skillStorage);
+            relationStorage = new RelationStorage(managerConnector);
+            relationService = new RelationService(relationStorage);
             companyStorage = new CompanyStorage(managerConnector);
+            companyService = new CompanyService(companyStorage);
             customerStorage = new CustomerStorage(managerConnector);
+            customerService = new CustomerService(customerStorage);
+            developerStorage = new DeveloperStorage(managerConnector, companyStorage, skillStorage);
             projectStorage = new ProjectStorage(managerConnector, companyStorage, customerStorage);
+            projectService = new ProjectService(projectStorage, developerStorage, companyService,
+                    customerService, relationService);
+            developerService = new DeveloperService(developerStorage, projectService, projectStorage,
+                    skillStorage, companyStorage, relationService, skillService);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -48,16 +64,7 @@ public class ListOfAllProjects extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        List<ProjectDto> projects = projectStorage.findAll().stream()
-                .map(Optional::get)
-                .map(ProjectDao::getProject_name)
-                .map(name -> projectStorage.findByName(name))
-                .map(project -> project.get())
-                .map(ProjectConverter::from)
-                .toList();
-
-        req.setAttribute("projects", projects);
-        req.getRequestDispatcher("/WEB-INF/view/listAllProjects.jsp").forward(req, resp);
-
+               req.getRequestDispatcher("/WEB-INF/view/developerInfoForm.jsp").forward(req, resp);
     }
+
 }

@@ -31,4 +31,8 @@ public SkillService(SkillStorage skillStorage) {
         return skillDto;
     }
 
+    public List<String > getSkillSetByDeveloperId(long id) {
+        return skillStorage.getSkillSetByDeveloperId(id);
+    }
+
 }

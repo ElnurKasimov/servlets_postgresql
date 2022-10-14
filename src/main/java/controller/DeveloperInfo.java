@@ -5,7 +5,6 @@ import model.config.Migration;
 import model.config.PropertiesConfig;
 import model.dto.DeveloperDto;
 import model.service.*;
-import model.service.converter.DeveloperConverter;
 import model.storage.*;
 
 import javax.servlet.ServletException;
@@ -15,11 +14,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.Properties;
 
-@WebServlet(urlPatterns = "/developer/list_all_developers")
+@WebServlet(urlPatterns = "/developer/developer_info")
 public class DeveloperInfo extends HttpServlet {
     private static DatabaseManagerConnector managerConnector;
     private static DeveloperStorage developerStorage;
@@ -31,7 +30,7 @@ public class DeveloperInfo extends HttpServlet {
     private static ProjectStorage projectStorage;
     private static ProjectService projectService;
     private static SkillService skillService;
-    private  static SkillStorage skillStorage;
+    private static SkillStorage skillStorage;
     private static RelationStorage relationStorage;
     private static RelationService relationService;
 
@@ -54,7 +53,7 @@ public class DeveloperInfo extends HttpServlet {
             customerService = new CustomerService(customerStorage);
             developerStorage = new DeveloperStorage(managerConnector, companyStorage, skillStorage);
             projectStorage = new ProjectStorage(managerConnector, companyStorage, customerStorage);
-            projectService = new ProjectService(projectStorage, developerStorage,companyService,
+            projectService = new ProjectService(projectStorage, developerStorage, companyService,
                     customerService, relationService);
             developerService = new DeveloperService(developerStorage, projectService, projectStorage,
                     skillStorage, companyStorage, relationService, skillService);
@@ -67,23 +66,20 @@ public class DeveloperInfo extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String lastName = req.getParameter("lastName");
         String firstName = req.getParameter("firstName");
-        boolean isPresent = developerService.isExist(lastName, firstName);
-        if () {
-            developerService.getInfoByName(lastName, firstName);
-
+        List<String> projects = new ArrayList<>();
+        List<String> skills = new ArrayList<>();
+        boolean isPresent = false;
+        DeveloperDto developerDto = developerService.getByName(lastName, firstName);
+        if (developerDto != null) {
+            isPresent = true;
+            projects = projectService.getProjectsNameByDeveloperId(developerDto.getDeveloper_id());
+            skills =  skillService.getSkillSetByDeveloperId(developerDto.getDeveloper_id());
         }
-
         req.setAttribute("isPresent", isPresent);
-        req.setAttribute("books", books);
-        req.getRequestDispatcher("/WEB-INF/jsp/findBook.jsp").forward(req, resp);
-        }
-
-        List<DeveloperDto> developers = developerStorage.findAll()
-                .stream().map(Optional::get)
-                .map(DeveloperConverter::from)
-                .toList();
-        req.setAttribute("developers", developers);
-        req.getRequestDispatcher("/WEB-INF/view/listAllDevelopers.jsp").forward(req, resp);
-
+        req.setAttribute("developer", developerDto);
+        req.setAttribute("projects", projects);
+        req.setAttribute("skills", skills);
+        req.getRequestDispatcher("/WEB-INF/view/developerInfo.jsp").forward(req, resp);
     }
+
 }

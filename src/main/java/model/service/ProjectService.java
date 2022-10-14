@@ -49,6 +49,10 @@ public class ProjectService {
         return result;
     }
 
+    public List<String> getProjectsNameByDeveloperId(long id) {
+        return projectStorage.getProjectsNameByDeveloperId(id);
+    }
+
     public List<ProjectDto> getCompanyProjects(String companyName) {
         List<ProjectDto> projects = new ArrayList<>();
         List<ProjectDao> projectDaoList = projectStorage.getCompanyProjects(companyName);
