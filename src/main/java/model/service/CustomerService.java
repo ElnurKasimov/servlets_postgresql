@@ -19,24 +19,24 @@ public  CustomerService (CustomerStorage customerStorage) {
 }
 
 
-    public List<String> save (CustomerDto customerDto) {
-        List<String> result = new ArrayList<>();
+    public String save (CustomerDto customerDto) {
+        String result = "";
         Optional<CustomerDao> customerFromDb = customerStorage.findByName(customerDto.getCustomer_name());
         if (customerFromDb.isPresent()) {
-            result.add(validateByName(customerDto, CustomerConverter.from(customerFromDb.get())));
+            result = validateByName(customerDto, CustomerConverter.from(customerFromDb.get()));
         } else {
             customerStorage.save(CustomerConverter.to(customerDto));
-            result.add("\tCustomer successfully added to the database");
+            result = ("Customer " + customerDto.getCustomer_name() + "successfully added to the database");
         };
         return result;
     }
 
     public String  validateByName(CustomerDto customerDto, CustomerDto customerFromDb) {
         if (!customerDto.getReputation().toString().equals(customerFromDb.getReputation().toString())) {
-            return String.format("\tCustomer with name '%s' already exist with different " +
+            return String.format("Customer with name '%s' already exist with different " +
                             "reputation '%s'. Please enter correct data",
                     customerDto.getCustomer_name(), customerFromDb.getReputation().toString());
-        } else return "\tCustomer successfully added to the database";
+        } else return "Ok. A customer with such parameters is present in the database already.";
     }
 
     public Optional<CustomerDto> findByName(String name) {

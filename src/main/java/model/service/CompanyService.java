@@ -17,25 +17,24 @@ public  CompanyService (CompanyStorage companyStorage) {
     this.companyStorage = companyStorage;
 }
 
-public CompanyDto save (CompanyDto companyDto) {
-    List<String> result = new ArrayList<>();
+public String save (CompanyDto companyDto) {
+    String result = "";
     Optional<CompanyDao> companyFromDb = companyStorage.findByName(companyDto.getCompany_name());
     if (companyFromDb.isPresent()) {
-        result.add(validateByName(companyDto, CompanyConverter.from(companyFromDb.get())));
+        result = validateByName(companyDto, CompanyConverter.from(companyFromDb.get()));
     } else {
         companyStorage.save(CompanyConverter.to(companyDto));
-        result.add("\tCompany " + companyDto.getCompany_name() + " successfully added to the database");
+        result = "Company " + companyDto.getCompany_name() + " successfully added to the database";
     };
-  //  Output.getInstance().print(result);
-    return companyDto;
+    return result;
 }
 
     public String  validateByName(CompanyDto companyDto, CompanyDto companyFromDb) {
         if (!companyDto.getRating().toString().equals(companyFromDb.getRating().toString())) {
-            return String.format("\tCompany with name '%s' already exist with different " +
-                    "rating '%s'. Please enter correct data",
+            return String.format("Company with name '%s' already exist with different " +
+                    "rating '%s'. Please enter correct data.",
                     companyDto.getCompany_name(), companyFromDb.getRating().toString());
-        } else return "Ok. The company is present in the database";
+        } else return "Ok. A company with such parameters is present in the database already.";
     }
 
     public List<CompanyDto> findAllCompanies() {
@@ -64,10 +63,10 @@ public CompanyDto save (CompanyDto companyDto) {
         return new CompanyDto(newCompanyName, CompanyDto.Rating.valueOf(newCompanyRating));
     }
 
-    public CompanyDto checkByName (String name) {
-        CompanyDto companyDto = findByName(name).orElseGet(this::createCompany);
-        return  save(companyDto);
-    }
+//    public CompanyDto checkByName (String name) {
+//        CompanyDto companyDto = findByName(name).orElseGet(this::createCompany);
+//        return  save(companyDto);
+//    }
 
     public void deleteCompany (String name) {
         List<String> result = new ArrayList<>();

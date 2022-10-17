@@ -1,4 +1,4 @@
-package controller;
+package controller.developerController;
 
 import model.config.DatabaseManagerConnector;
 import model.config.Migration;
@@ -19,8 +19,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Properties;
 
-@WebServlet(urlPatterns = "/developer/language_developers")
-public class ListDevelopersWithCertainLanguage extends HttpServlet {
+@WebServlet(urlPatterns = "/developer/list_all_developers")
+public class ListOfAllDevelopers extends HttpServlet {
     private static DatabaseManagerConnector managerConnector;
     private static DeveloperStorage developerStorage;
     private static DeveloperService developerService;
@@ -65,11 +65,9 @@ public class ListDevelopersWithCertainLanguage extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        String language = req.getParameter("language");
-        List<String> developersList = developerService.getListNamesDevelopersWithCertainLanguage(language);
-        req.setAttribute("language", language);
-        req.setAttribute("list", developersList);
-        req.getRequestDispatcher("/WEB-INF/view/listDevelopersWithCertainLanguage.jsp").forward(req, resp);
+        List<DeveloperDto> developers = developerService.findAllDevelopers();
+        req.setAttribute("developers", developers);
+        req.getRequestDispatcher("/WEB-INF/view/developer/listAllDevelopers.jsp").forward(req, resp);
 
     }
 }

@@ -1,14 +1,11 @@
-package controller;
+package controller.developerController;
 
 import model.config.DatabaseManagerConnector;
 import model.config.Migration;
 import model.config.PropertiesConfig;
-import model.dao.ProjectDao;
 import model.dto.DeveloperDto;
-import model.dto.ProjectDto;
 import model.service.*;
 import model.service.converter.DeveloperConverter;
-import model.service.converter.ProjectConverter;
 import model.storage.*;
 
 import javax.servlet.ServletException;
@@ -22,8 +19,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Properties;
 
-@WebServlet(urlPatterns = "/project/list_all_projects")
-public class ListOfAllProjects extends HttpServlet {
+@WebServlet(urlPatterns = "/developer/language_developers")
+public class ListDevelopersWithCertainLanguage extends HttpServlet {
     private static DatabaseManagerConnector managerConnector;
     private static DeveloperStorage developerStorage;
     private static DeveloperService developerService;
@@ -59,6 +56,8 @@ public class ListOfAllProjects extends HttpServlet {
             projectStorage = new ProjectStorage(managerConnector, companyStorage, customerStorage);
             projectService = new ProjectService(projectStorage, developerStorage, companyService,
                     customerService, relationService);
+            developerService = new DeveloperService(developerStorage, projectService, projectStorage,
+                    skillStorage, companyStorage, relationService, skillService);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -66,9 +65,11 @@ public class ListOfAllProjects extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        List<ProjectDto> projects = projectService.findAllProjects();
-        req.setAttribute("projects", projects);
-        req.getRequestDispatcher("/WEB-INF/view/listAllProjects.jsp").forward(req, resp);
+        String language = req.getParameter("language");
+        List<String> developersList = developerService.getListNamesDevelopersWithCertainLanguage(language);
+        req.setAttribute("language", language);
+        req.setAttribute("list", developersList);
+        req.getRequestDispatcher("/WEB-INF/view/developer/listDevelopersWithCertainLanguage.jsp").forward(req, resp);
 
     }
 }

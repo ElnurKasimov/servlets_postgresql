@@ -1,10 +1,14 @@
-package controller;
+package controller.projectController;
 
 import model.config.DatabaseManagerConnector;
 import model.config.Migration;
 import model.config.PropertiesConfig;
+import model.dao.ProjectDao;
 import model.dto.DeveloperDto;
+import model.dto.ProjectDto;
 import model.service.*;
+import model.service.converter.DeveloperConverter;
+import model.service.converter.ProjectConverter;
 import model.storage.*;
 
 import javax.servlet.ServletException;
@@ -14,12 +18,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Properties;
 
-@WebServlet(urlPatterns = "/developer/developer_info")
-public class DeveloperInfo extends HttpServlet {
+@WebServlet(urlPatterns = "/project/list_all_projects")
+public class ListOfAllProjects extends HttpServlet {
     private static DatabaseManagerConnector managerConnector;
     private static DeveloperStorage developerStorage;
     private static DeveloperService developerService;
@@ -55,8 +59,6 @@ public class DeveloperInfo extends HttpServlet {
             projectStorage = new ProjectStorage(managerConnector, companyStorage, customerStorage);
             projectService = new ProjectService(projectStorage, developerStorage, companyService,
                     customerService, relationService);
-            developerService = new DeveloperService(developerStorage, projectService, projectStorage,
-                    skillStorage, companyStorage, relationService, skillService);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -64,22 +66,9 @@ public class DeveloperInfo extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        String lastName = req.getParameter("lastName");
-        String firstName = req.getParameter("firstName");
-        List<String> projects = new ArrayList<>();
-        List<String> skills = new ArrayList<>();
-        boolean isPresent = false;
-        DeveloperDto developerDto = developerService.getByName(lastName, firstName);
-        if (developerDto != null) {
-            isPresent = true;
-            projects = projectService.getProjectsNameByDeveloperId(developerDto.getDeveloper_id());
-            skills =  skillService.getSkillSetByDeveloperId(developerDto.getDeveloper_id());
-        }
-        req.setAttribute("isPresent", isPresent);
-        req.setAttribute("developer", developerDto);
+        List<ProjectDto> projects = projectService.findAllProjects();
         req.setAttribute("projects", projects);
-        req.setAttribute("skills", skills);
-        req.getRequestDispatcher("/WEB-INF/view/developerInfo.jsp").forward(req, resp);
-    }
+        req.getRequestDispatcher("/WEB-INF/view/project/listAllProjects.jsp").forward(req, resp);
 
+    }
 }

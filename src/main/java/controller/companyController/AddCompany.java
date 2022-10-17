@@ -1,13 +1,10 @@
-package controller;
+package controller.companyController;
 
 import model.config.DatabaseManagerConnector;
 import model.config.Migration;
 import model.config.PropertiesConfig;
 import model.dto.CompanyDto;
-import model.dto.CustomerDto;
 import model.service.*;
-import model.service.converter.CompanyConverter;
-import model.service.converter.CustomerConverter;
 import model.storage.*;
 
 import javax.servlet.ServletException;
@@ -18,14 +15,13 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
-import java.util.Optional;
 import java.util.Properties;
 
-@WebServlet(urlPatterns = "/customer/list_all_customers")
-public class ListOfAllCustomer extends HttpServlet {
+@WebServlet(urlPatterns = "/company/add")
+public class AddCompany extends HttpServlet {
     private static DatabaseManagerConnector managerConnector;
-    private static CustomerStorage customerStorage;
-    private static CustomerService customerService;
+    private static CompanyStorage companyStorage;
+    private static CompanyService companyService;
 
     @Override
     public void init() throws ServletException {
@@ -36,18 +32,25 @@ public class ListOfAllCustomer extends HttpServlet {
         managerConnector = new DatabaseManagerConnector(properties, dbUsername, dbPassword);
         new Migration(managerConnector).initDb();
         try {
-            customerStorage = new CustomerStorage(managerConnector);
-            customerService = new CustomerService(customerStorage);
+            companyStorage = new CompanyStorage(managerConnector);
+            companyService = new CompanyService(companyStorage);
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
 
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        List<CustomerDto> customers = customerService.findAllCustomers();
-        req.setAttribute("customers", customers);
-        req.getRequestDispatcher("/WEB-INF/view/listAllCustomers.jsp").forward(req, resp);
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        String companyName = req.getParameter("companyName");
+        String rating = req.getParameter("rating");
+        CompanyDto newCompanyDto = new CompanyDto(companyName, CompanyDto.Rating.valueOf(rating));
+        String result = companyService.save(newCompanyDto);
+        req.setAttribute("result", result);
+        req.getRequestDispatcher("/WEB-INF/view/company/addCompany.jsp").forward(req, resp);
 
     }
+
+
+
+
 }

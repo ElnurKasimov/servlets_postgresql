@@ -1,4 +1,4 @@
-package controller;
+package controller.developerController;
 
 import model.config.DatabaseManagerConnector;
 import model.config.Migration;
@@ -66,7 +66,7 @@ public class ListDevelopersWithCertainLevel extends HttpServlet {
         List<String> developersList = developerService.getListNamesDevelopersWithCertainLevel(level);
         req.setAttribute("level", level);
         req.setAttribute("list", developersList);
-        req.getRequestDispatcher("/WEB-INF/view/listDevelopersWithCertainLevel.jsp").forward(req, resp);
+        req.getRequestDispatcher("/WEB-INF/view/developer/listDevelopersWithCertainLevel.jsp").forward(req, resp);
 
     }
 }

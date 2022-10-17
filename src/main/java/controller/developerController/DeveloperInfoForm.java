@@ -1,10 +1,8 @@
-package controller;
+package controller.developerController;
 
 import model.config.DatabaseManagerConnector;
 import model.config.Migration;
 import model.config.PropertiesConfig;
-import model.service.*;
-import model.storage.*;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -14,8 +12,8 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Properties;
 
-@WebServlet(urlPatterns = "/developer/language_developers/form")
-public class ListDevelopersWithCertainLanguageForm extends HttpServlet {
+@WebServlet(urlPatterns = "/developer/developer_info/form")
+public class DeveloperInfoForm extends HttpServlet {
     private static DatabaseManagerConnector managerConnector;
 
     @Override
@@ -30,7 +28,7 @@ public class ListDevelopersWithCertainLanguageForm extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-               req.getRequestDispatcher("/WEB-INF/view/listDevelopersWithCertainLanguageForm.jsp").forward(req, resp);
+               req.getRequestDispatcher("/WEB-INF/view/developer/developerInfoForm.jsp").forward(req, resp);
     }
 
 }
