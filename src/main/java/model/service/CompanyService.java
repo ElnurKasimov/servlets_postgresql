@@ -75,27 +75,17 @@ public String save (CompanyDto companyDto) {
       //  Output.getInstance().print(result);
     }
 
-    public void updateCompany() {
-        System.out.print("Enter name of the company to update : ");
-        Scanner sc = new Scanner(System.in);
+    public String updateCompany(CompanyDto companyDto) {
         CompanyDto companyDtoToUpdate = null;
-        while (true) {
-            String name = sc.nextLine();
-            Optional<CompanyDto>  companyDtoFromDb = findByName(name);
-            if (companyDtoFromDb.isEmpty()) {
-                System.out.print("Unfortunately, there is no company with such name in the database.  Please enter correct company name : ");
-            } else {
-                companyDtoToUpdate = companyDtoFromDb.get();
-                break;
-            }
+        Optional<CompanyDto>  companyDtoFromDb = findByName(companyDto.getCompany_name());
+        if (companyDtoFromDb.isEmpty()) {
+            return "Unfortunately, there is no company with such name in the database.  Please enter correct company name.";
+        } else {
+            companyDtoToUpdate = companyDtoFromDb.get();
+            companyDtoToUpdate.setRating(companyDto.getRating());
+            CompanyDto updatedCompanyDto = CompanyConverter.from(companyStorage.update(CompanyConverter.to(companyDtoToUpdate)));
+            return String.format("Company %s successfully updated.", updatedCompanyDto.getCompany_name());
         }
-        System.out.print("Enter new rating for the company (high, middle, low) : ");
-        String newCompanyRating = sc.nextLine();
-        companyDtoToUpdate.setRating(CompanyDto.Rating.valueOf(newCompanyRating));
-        CompanyDto updatedCompanyDto = CompanyConverter.from(companyStorage.update(CompanyConverter.to(companyDtoToUpdate)));
-        List<String> result = new ArrayList<>();
-        result.add(String.format("Company %s successfully updated.", updatedCompanyDto.getCompany_name()));
-       // Output.getInstance().print(result);
     }
 
 }
