@@ -1,5 +1,6 @@
 package model.service;
 
+import model.dao.CompanyDao;
 import model.dao.CustomerDao;
 import model.dto.CustomerDto;
 import model.service.converter.CustomerConverter;
@@ -51,11 +52,14 @@ public  CustomerService (CustomerStorage customerStorage) {
                 .toList();
     }
 
-    public void deleteCustomer (String name) {
-        List<String> result = new ArrayList<>();
-        customerStorage.delete(customerStorage.findByName(name).get());
-        result.add("Customer " + name + " successfully deleted from the database");
-       // Output.getInstance().print(result);
+    public String deleteCustomer (String name) {
+        String result = "";
+        Optional<CustomerDao> customerDaoFromDb = customerStorage.findByName(name);
+        if(customerDaoFromDb.isPresent()) {
+            customerStorage.delete(customerDaoFromDb.get());
+            result = "Customer " + name + " successfully deleted from the database";
+        } else { result = "There is no customer with such name in the database. Please enter correct data.";}
+        return result;
     }
 
     public String updateCustomer(CustomerDto customerDto) {

@@ -68,11 +68,14 @@ public String save (CompanyDto companyDto) {
 //        return  save(companyDto);
 //    }
 
-    public void deleteCompany (String name) {
-        List<String> result = new ArrayList<>();
-        companyStorage.delete(companyStorage.findByName(name).get());
-        result.add("Company " + name + " successfully deleted from the database");
-      //  Output.getInstance().print(result);
+    public String deleteCompany (String name) {
+        String result = "";
+        Optional<CompanyDao> companyDaoFromDb = companyStorage.findByName(name);
+        if(companyDaoFromDb.isPresent()) {
+            companyStorage.delete(companyDaoFromDb.get());
+            result = "Company " + name + " successfully deleted from the database";
+        } else { result = "There is no company with such name in the database. Please enter correct data.";}
+        return result;
     }
 
     public String updateCompany(CompanyDto companyDto) {

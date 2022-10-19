@@ -4,10 +4,9 @@ import model.config.DatabaseManagerConnector;
 import model.config.Migration;
 import model.config.PropertiesConfig;
 import model.dto.CompanyDto;
-import model.dto.DeveloperDto;
+
 import model.service.*;
-import model.service.converter.CompanyConverter;
-import model.service.converter.DeveloperConverter;
+
 import model.storage.*;
 
 import javax.servlet.ServletException;
