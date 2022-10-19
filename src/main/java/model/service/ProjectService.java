@@ -176,44 +176,29 @@ public class ProjectService {
                 (dateFromProjectDto.equals(dateFromProjectFromDb));
     }
 
-    public void getInfoByName(String name) {
-        List<String> result = new ArrayList<>();
-        ProjectDto projectDto = ProjectConverter.from(projectStorage.findByName(name).get());
-        result.add(String.format("\t\tProject  %s  :", projectDto.getProject_name()));
-        result.add(String.format("\t\t\tis ordered by %s with budget %d,",
-                projectDto.getCustomerDto().getCustomer_name(), projectDto.getCost()));
-        result.add(String.format("\t\t\tis developed by %s from %s,",
-                projectDto.getCompanyDto().getCompany_name(), projectDto.getStart_date().toString()));
-        //Output.getInstance().print(result);
+    public  ProjectDto getInfoByName(String name) {
+        return ProjectConverter.from(projectStorage.findByName(name).get());
     }
 
-    public void getDevelopersNamesByProjectName(String name) {
-        List<String> result = new ArrayList<>();
-        result.add("\t\tSuch developers develop the project :");
-        developerStorage.getDevelopersNamesByProjectName(name).forEach(line -> result.add("\t\t\t" + line));
-       // Output.getInstance().print(result);
+    public List<String> getDevelopersNamesByProjectName(String name) {
+        return developerStorage.getDevelopersNamesByProjectName(name);
     }
 
-    public void getProjectExpences(String projectName) {
-        List<String> result = new ArrayList<>();
-        result.add("\t\tExpences of the project - " + projectStorage.getProjectExpences(projectName));
-       // Output.getInstance().print(result);
+    public long getProjectExpences(String projectName) {
+        return  projectStorage.getProjectExpences(projectName);
     }
 
-    public void getProjectsListInSpecialFormat() {
+    public List<String> getProjectsListInSpecialFormat() {
         List<String> result = new ArrayList<>();
-        result.add("\tThe database contains such projects (start date - project name - a quantity developers in this project):");
-        if (projectStorage.findAll().isEmpty()) {
-            result.add("unfortunately, there is no projects in the database.");
-        } else {
+        if (!projectStorage.findAll().isEmpty()) {
             projectStorage.findAll().forEach(projectDao ->
-                    result.add(String.format("\t\t%s - %s - %d,",
+                    result.add(String.format("%s - %s - %d,",
                             projectDao.get().getStart_date().toString(),
                             projectDao.get().getProject_name(),
                             developerStorage.getQuantityOfProjectDevelopers(projectDao.get().getProject_name())
                     )));
         }
-       // Output.getInstance().print(result);
+     return result;
     }
 
     public void updateProject() {

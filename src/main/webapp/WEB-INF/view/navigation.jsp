@@ -11,20 +11,21 @@
           <li><a href="/developer/developer_info/form">Full information about a developer</a></li>
           <li><a href="/developer/language_developers/form">List developers with certain language </a></li>
           <li><a href="/developer/level_developers/form">List developers with certain level</a></li>
-          <li><a href="/developer/add">Add developer</a></li>
-          <li><a href="/developer/update">Update developer</a></li>
-          <li><a href="/developer/delete">Delete developer</a></li>
+          <li><a href="/developer/add/form">Add developer</a></li>
+          <li><a href="/developer/update/form">Update developer</a></li>
+          <li><a href="/developer/delete/fom">Delete developer</a></li>
         </ul>
       </li>
       <li  class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" href="#">Projects <span class="caret"></span></a>
          <ul class="dropdown-menu">
             <li><a href="/project/list_all_projects">List of all projects</a></li>
-            <li><a href="/project/list_project_developers">List project developers</a></li>
-            <li><a href="/project/project_expenses">Project expenses: sum of salary all its developers</a></li>
+            <li><a href="/project/project_info/form">Full information about a project</a></li>
+            <li><a href="/project/list_project_developers/form">List project developers</a></li>
+            <li><a href="/project/project_expenses/form">Project expenses: sum of salary all its developers</a></li>
             <li><a href="/project/all_projects_in_special_format">List of projects in special format</a></li>
-            <li><a href="/project/add">Add a project</a></li>
-            <li><a href="/project/update">Update a project</a></li>
-            <li><a href="/project/delete">Delete a project</a></li>
+            <li><a href="/project/add/form">Add a project</a></li>
+            <li><a href="/project/update/form">Update a project</a></li>
+            <li><a href="/project/delete/form">Delete a project</a></li>
           </ul>
        </li>
       <li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" href="#">Companies<span class="caret"></span></a>
