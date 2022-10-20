@@ -13,7 +13,7 @@ import java.io.IOException;
 import java.util.Properties;
 
 @WebServlet(urlPatterns = "/project/delete/form")
-public class deleteProjectForm extends HttpServlet {
+public class DeleteProjectForm extends HttpServlet {
     private static DatabaseManagerConnector managerConnector;
 
     @Override

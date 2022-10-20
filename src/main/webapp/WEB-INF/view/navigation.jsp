@@ -13,7 +13,7 @@
           <li><a href="/developer/level_developers/form">List developers with certain level</a></li>
           <li><a href="/developer/add/form">Add developer</a></li>
           <li><a href="/developer/update/form">Update developer</a></li>
-          <li><a href="/developer/delete/fom">Delete developer</a></li>
+          <li><a href="/developer/delete/form">Delete developer</a></li>
         </ul>
       </li>
       <li  class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" href="#">Projects <span class="caret"></span></a>
