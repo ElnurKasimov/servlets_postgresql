@@ -10,13 +10,15 @@
     </head>
     <body>
         <c:import url="${contextPath}/WEB-INF/view/navigation.jsp"/>
-            <form action="/company/add" method ="post">
-                <label for="companyName"> Company name: </label>
-                <input type="text" id="companyName" name="companyName"><br>
-                <label for="rating"> Rating (high, middle, low) : </label>
-                 <input type="text" id="rating" name="rating"><br>
-                <button type="submit">Save</button>
-            </form>
-            <c:out value="${result}"/>
+           <form action="/company/add" method ="post">
+               <label for="companyName"> Company name: </label>
+               <input type="text" id="companyName" name="companyName"><br>
+               <div><b>Company rating:</b></div>
+               <label><input type="radio" name="rating" value="high">High</label>
+               <label><input type="radio" name="rating" value="middle">Middle</label>
+               <label><input type="radio" name="rating" value="low" checked="checked">Low</label><br>
+               <button type="submit">Save</button>
+           </form>
+        <c:out value="${result}"/>
     </body>
 </html>

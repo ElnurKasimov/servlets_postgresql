@@ -13,8 +13,10 @@
               <form action="/customer/add" method="post">
                   <label for="customerName"> Customer name: </label>
                   <input type="text" id="customerName" name="customerName"><br>
-                  <label for="reputation"> Reputation (insolvent, trustworthy, respectable) : </label>
-                   <input type="text" id="reputation" name="reputation"><br>
+                  <div>Customer reputation:</div>
+                  <label><input type="radio" name="reputation" value="insolvent" checked="checked">Insolvent</label>
+                  <label><input type="radio" name="reputation" value="trustworthy">Trustworthy</label>
+                  <label><input type="radio" name="reputation" value="respectable">Respectable</label><br>
                   <button type="submit">Save</button>
               </form>
             <c:out value="${result}"/>

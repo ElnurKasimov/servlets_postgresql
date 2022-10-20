@@ -27,7 +27,7 @@ public  CustomerService (CustomerStorage customerStorage) {
             result = validateByName(customerDto, CustomerConverter.from(customerFromDb.get()));
         } else {
             customerStorage.save(CustomerConverter.to(customerDto));
-            result = ("Customer " + customerDto.getCustomer_name() + "successfully added to the database");
+            result = ("Customer " + customerDto.getCustomer_name() + " successfully added to the database");
         };
         return result;
     }

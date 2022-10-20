@@ -10,13 +10,17 @@
     </head>
     <body>
         <c:import url="${contextPath}/WEB-INF/view/navigation.jsp"/>
-            <form action="/customer/add" method="post">
-                <label for="customerName"> Customer name: </label>
+            <form action="/project/add" method="post">
+                <label for="projectName">Project name:</label>
+                <input type="text" id="projectName" name="projectName"><br>
+                <label for="customerName">Customer which ordered the project:</label>
                 <input type="text" id="customerName" name="customerName"><br>
-                <div>Customer reputation:</div>
-                <label><input type="radio" name="reputation" value="insolvent" checked="checked">Insolvent</label>
-                <label><input type="radio" name="reputation" value="trustworthy">Trustworthy</label>
-                <label><input type="radio" name="reputation" value="respectable">Respectable</label><br>
+                <label for="cost">Budget of the project (only digits):</label>
+                <input type="text" id="cost" name="cost"><br>
+                <label for="companyName">Company which develop the project: </label>
+                <input type="text" id="companyName" name="companyName"><br>
+                <label for="startDate">Start date of the project (in format yyyy-mm-dd):</label>
+                <input type="text" id="startDate" name="startDate"><br>
                 <button type="submit">Save</button>
             </form>
     </body>
