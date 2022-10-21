@@ -59,7 +59,7 @@ public class ProjectService {
         return projectStorage.getProjectsNameByDeveloperId(id);
     }
 
-    public List<ProjectDto> getCompanyProjects(String companyName) {
+    public List<ProjectDto>   getCompanyProjects(String companyName) {
         List<ProjectDto> projects = new ArrayList<>();
         List<ProjectDao> projectDaoList = projectStorage.getCompanyProjects(companyName);
         for (ProjectDao projectDao : projectDaoList) {

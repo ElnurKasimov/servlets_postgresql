@@ -10,25 +10,21 @@
     </head>
     <body>
         <c:import url="${contextPath}/WEB-INF/view/navigation.jsp"/>
-            <form action="/developer/add" method="post">
+            <form action="/developer/add_developer_relations" method="post">
                 <label for="lastName">Last name:</label>
-                <input type="text" id="lastName" name="lastName">
+                <input type="text" id="lastName" name="lastName" value =${lastName}>
                 <label for="firstName">First name:</label>
-                <input type="text" id="irstName" name="irstName"><br>
-                <label for="age">Age:</label>
-                <input type="age" id="age" name="age"><br>
-                <label for="companyName"> Company where the developer works: </label>
-                <input type="text" id="companyName" name="companyName"><br>
-                <label for="salary">Salary:</label>
-                <input type="salary" id="salary" name="salary"><br>
-                <label for="projectName">Project in which participate the developer:</label>
-                <input type="text" id="projectName" name="projectName"><br>
+                <input type="text" id="firstName" name="firstName" value = ${firstName}><br>
+                <p> The company You choose develops projects listed below . Choose those in which developer participates.</p>
+                <c:forEach var = "project" items="${projects}">
+                  <input type="checkbox" name="projectName" value="${project.project_name}">${project.project_name}</input><br/>
+                </c:forEach><br>
                 <label for="language">Language:</label>
                 <input type="text" id="language" name="language">
                 <div><b>Level:</b></div>
-                <label><input type="radio" name="level" value="senior">High</label>
+                <label><input type="radio" name="level" value="senior">Senior</label>
                 <label><input type="radio" name="level" value="middle">Middle</label>
-                <label><input type="radio" name="level" value="junior" checked="checked">Low</label><br>
+                <label><input type="radio" name="level" value="junior" checked="checked">Junior</label><br>
                 <button type="submit">Save</button>
             </form>
     </body>

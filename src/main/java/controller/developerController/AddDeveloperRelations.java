@@ -3,6 +3,8 @@ package controller.developerController;
 import model.config.DatabaseManagerConnector;
 import model.config.Migration;
 import model.config.PropertiesConfig;
+import model.dto.DeveloperDto;
+import model.dto.ProjectDto;
 import model.service.*;
 import model.storage.*;
 
@@ -13,13 +15,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.sql.SQLException;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.util.Locale;
-import java.util.Properties;
+import java.util.*;
+import java.util.stream.Collectors;
 
-@WebServlet(urlPatterns = "/developer/add")
-public class AddDeveloper extends HttpServlet {
+@WebServlet(urlPatterns = "/developer/add_developer_relations")
+public class AddDeveloperRelations extends HttpServlet {
     private static DatabaseManagerConnector managerConnector;
     private static DeveloperStorage developerStorage;
     private static DeveloperService developerService;
@@ -67,15 +67,17 @@ public class AddDeveloper extends HttpServlet {
         String result = "";
         String lastName = req.getParameter("lastName");
         String firstName = req.getParameter("firstName");
-        int age = Integer.parseInt(req.getParameter("age"));
-        String companyName = req.getParameter("companyName");
-        int salary = Integer.parseInt(req.getParameter("salary"));
-        String projectName = req.getParameter("projectName");
+        String[]  projectsNames = req.getParameterValues("projectName");
+        Set<ProjectDto> developerProjects = Arrays.stream(projectsNames)
+                .map(name -> projectService.findByName(name))
+                .map(Optional::get)
+                .collect(Collectors.toSet());
         String language = req.getParameter("language");
         String level = req.getParameter("level");
-        result = developerService.saveDeveloper(lastName, firstName, age, companyName, salary, projectName, language, level);
+        DeveloperDto developerDto = developerService.getByName(lastName, firstName);
+        result = developerService.saveDeveloperRelations(developerDto, developerProjects, language, level);
         req.setAttribute("result", result);
-        req.getRequestDispatcher("/WEB-INF/view/developer/addDeveloper.jsp").forward(req, resp);
+        req.getRequestDispatcher("/WEB-INF/view/developer/addDeveloperRelations.jsp").forward(req, resp);
 
     }
 

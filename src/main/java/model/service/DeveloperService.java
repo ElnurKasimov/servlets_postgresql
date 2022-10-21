@@ -35,12 +35,9 @@ public DeveloperService (DeveloperStorage developerStorage, ProjectService proje
     this.skillService = skillService;
 }
 
-    public String saveDeveloper (String lastName, String firstName, int age, String companyName, int salary,
-                                 String projectName, String language, String level) {
+    public String saveDeveloper (String lastName, String firstName, int age, String companyName, int salary) {
       String result = "";
       CompanyDto companyDto = null;
-      ProjectDto projectDto = null;
-      DeveloperDto savedDeveloper = new DeveloperDto();
       DeveloperDto developerDtoToSave = new DeveloperDto();
       developerDtoToSave.setLastName(lastName);
       developerDtoToSave.setFirstName(firstName);
@@ -48,50 +45,25 @@ public DeveloperService (DeveloperStorage developerStorage, ProjectService proje
       developerDtoToSave.setSalary(salary);
       if (companyStorage.findByName(companyName).isPresent()) {
           developerDtoToSave.setCompanyDto(CompanyConverter.from(companyStorage.findByName(companyName).get()));
-          DeveloperDto developerFromDb = DeveloperConverter.from(developerStorage.findByName(lastName, firstName).get());
-          if (!validateByName(developerDtoToSave, developerFromDb).equals("")) {
-              if (projectStorage.findByName(projectName).isPresent()) {
-                  //todo реализовать ввод нескольких проектов для разработчика в jsp
-                  // проверять по каждому проекту есть ли он в этой компании
-
-                  projectDto = ProjectConverter.from(projectStorage.findByName(projectName).get());
-                  savedDeveloper = DeveloperConverter.from(developerStorage.save(DeveloperConverter.to(developerDtoToSave)));
-                  relationService.saveProjectDeveloper(projectDto, savedDeveloper);
-                  relationService.saveDeveloperSkill(newDeveloperDto, skillsDto);
-                  //todo
-                  // 1. save developer
-                  // 2. save project_developer relation
-                  // 3. save developer_skill relation
-
-                  "\tDeveloper " + developerDto.getLastName() + " " +
-                          developerDto.getFirstName() + " successfully added to the database";
-
-
-                  Optional<ProjectDao> projectFromDb =
-                          projectStorage.findByName(newProjectDto.getProject_name());
-                  if (projectFromDb.isPresent()) {
-                      if (validateByName(newProjectDto, ProjectConverter.from(projectFromDb.get()))) {
-                          savedDeveloper = ProjectConverter.from(projectFromDb.get()); // with id
-                      } else {
-                          result = (String.format("\tProject with name '%s ' already exist with different another data." +
-                                  " Please enter correct data", newProjectDto.getProject_name()));
-                      }
-                  } else {
-                      savedDeveloper = ProjectConverter.from(projectStorage.save(ProjectConverter.to(newProjectDto))); // with id
-                      result = "Project " + newProjectDto.getProject_name() + " successfully added to the database";
-                  }
-              } else {
-                  result = String.format("The company '%s' doesn't develop project with name '%s'. Please enter correct data.",
-                          companyName, projectName);
-              }
+          Optional<DeveloperDao> developerFromDb = developerStorage.findByName(lastName, firstName);
+          if (developerFromDb.isPresent()) {
+              result = validateByName(developerDtoToSave, DeveloperConverter.from(developerFromDb.get()));
           } else {
-              result = validateByName(developerDtoToSave, developerFromDb);
+              DeveloperDto savedDeveloperDto = DeveloperConverter.from(developerStorage.save(DeveloperConverter.to(developerDtoToSave)));
           }
       } else {
           result = "There is no company with name '" + companyName + "' in the database. Please enter correct data.";
       }
+        return result;
+    }
 
-      return result;
+    public  String saveDeveloperRelations(DeveloperDto developerDto, Set<ProjectDto>  developerProjects, String language, String level) {
+            relationService.saveProjectDeveloper(developerProjects, developerDto);
+            Set<SkillDto> skillsDto = new HashSet<>();
+            skillsDto.add(skillService.findByLanguageAndLevel(language, level));
+            relationService.saveDeveloperSkill(developerDto, skillsDto);
+        return String.format("Developer %s %s successfully added into database with all necessary relations."
+                , developerDto.getLastName(), developerDto.getFirstName());
     }
 
     public String validateByName(DeveloperDto developerDto, DeveloperDto developerFromDb) {
@@ -99,7 +71,8 @@ public DeveloperService (DeveloperStorage developerStorage, ProjectService proje
           (developerDto.getCompanyDto().getCompany_name().equals(developerFromDb.getCompanyDto().getCompany_name() ) )
           && (developerDto.getSalary() == developerFromDb.getSalary()) ) {
             return "";
-        } else return   String.format("\tDeveloper with name '%s %s ' already exist with different another data." +
+                    // String.format("Company %s  develops such projects : ", developerDto.getCompanyDto().getCompany_name());
+        } else return   String.format("\tDeveloper  %s %s  already exists with different another data." +
                          " Please enter correct data", developerDto.getLastName(), developerDto.getFirstName());
     }
 
@@ -112,6 +85,10 @@ public DeveloperService (DeveloperStorage developerStorage, ProjectService proje
 
     public DeveloperDto getByName(String lastName, String firstName) {
         return developerStorage.findByName(lastName, firstName).map(DeveloperConverter::from).orElse(null);
+    }
+
+    public long getIdByName(String lastName, String firstName) {
+        return developerStorage.getIdByName(lastName, firstName);
     }
 
     public void getInfoByName(String lastName, String firstName) {

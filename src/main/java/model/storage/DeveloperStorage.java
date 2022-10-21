@@ -40,7 +40,7 @@ public class DeveloperStorage implements Storage<DeveloperDao>{
     private final String UPDATE =
             "UPDATE developer SET age=?, salary=?, company_id=? WHERE lastName LIKE ? AND firstName LIKE ? RETURNING *";
     private final String GET_ID_BY_NAME =
-            "SELECT developer_id FROM developer WHERE WHERE lastName LIKE ? AND firstName LIKE ?";
+            "SELECT developer_id FROM developer WHERE  lastName LIKE ? AND firstName LIKE ?";
     private  final String DELETE = "DELETE FROM developer WHERE lastName LIKE ? AND firstName LIKE ?";
 
     public DeveloperStorage (DatabaseManagerConnector manager, CompanyStorage companyStorage,
@@ -100,6 +100,19 @@ public class DeveloperStorage implements Storage<DeveloperDao>{
         return Optional.empty();
     }
 
+    public long getIdByName(String lastName, String firstName) {
+        try(Connection connection = manager.getConnection();
+            PreparedStatement statement = connection.prepareStatement(FIND_BY_NAME)) {
+            statement.setString(1, lastName);
+            statement.setString(2, firstName);
+            ResultSet resultSet = statement.executeQuery();
+            return resultSet.getLong("developer_id");
+        }
+        catch (SQLException exception) {
+            exception.printStackTrace();
+        }
+        return 0;
+    }
     @Override
     public List<Optional<DeveloperDao>> findAll() {
         List<Optional<DeveloperDao>> developerDaoList = new ArrayList<>();
