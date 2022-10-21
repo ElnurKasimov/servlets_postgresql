@@ -31,6 +31,5 @@
                 <label><input type="radio" name="level" value="junior" checked="checked">Low</label><br>
                 <button type="submit">Save</button>
             </form>
-        <c:out value="${result}"/>
     </body>
 </html>

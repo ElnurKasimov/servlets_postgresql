@@ -65,15 +65,15 @@ public class AddDeveloper extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String result = "";
-        String projectName = req.getParameter("projectName");
-        String customerName = req.getParameter("customerName");
-        int cost = Integer.parseInt(req.getParameter("cost"));
+        String lastName = req.getParameter("lastName");
+        String firstName = req.getParameter("firstName");
+        int age = Integer.parseInt(req.getParameter("age"));
         String companyName = req.getParameter("companyName");
-        String startDate = req.getParameter("startDate");
-        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd", Locale.ENGLISH);
-        LocalDate startLocalDate = LocalDate.parse(startDate, dtf);
-        java.sql.Date startSqlDate = java.sql.Date.valueOf(startLocalDate);
-        result = projectService.saveProject(projectName, customerName, cost, companyName, startSqlDate);
+        int salary = Integer.parseInt(req.getParameter("salary"));
+        String projectName = req.getParameter("projectName");
+        String language = req.getParameter("language");
+        String level = req.getParameter("level");
+        result = developerService.saveDeveloper(lastName, firstName, age, companyName, salary, projectName, language, level);
         req.setAttribute("result", result);
         req.getRequestDispatcher("/WEB-INF/view/developer/addDeveloper.jsp").forward(req, resp);
 
