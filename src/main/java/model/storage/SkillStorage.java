@@ -19,6 +19,8 @@ public class SkillStorage implements Storage<SkillDao> {
      "JOIN skill ON skill.skill_id = developer_skill.skill_id WHERE developer.developer_id = ?";
     private final String COUNT_BY_LANGUAGE = "SELECT COUNT(skill_id) FROM skill WHERE language LIKE ?";
     private final String COUNT_BY_LEVEL = "SELECT COUNT(skill_id) FROM skill WHERE level LIKE ?";
+    private  final String  GET_SKILL_IDS_BY_DEVELOPER_ID =
+            "SELECT  skill_id FROM  developer_skill  WHERE developer_id = ?";
 
     public SkillStorage(DatabaseManagerConnector manager) throws SQLException {
         this.manager = manager;
@@ -44,6 +46,22 @@ public class SkillStorage implements Storage<SkillDao> {
             throw new RuntimeException("The skill was not created");
         }
         return entity;
+    }
+
+    public List<Long> getSkillIdsByDeveloperId (long id) {
+        List<Long> skillIds = new ArrayList<>();
+        try (Connection connection = manager.getConnection();
+             PreparedStatement statement = connection.prepareStatement(GET_SKILL_IDS_BY_DEVELOPER_ID)) {
+            statement.setLong(1, id);
+            ResultSet rs = statement.executeQuery();
+            while (rs.next()) {
+                skillIds.add(rs.getLong("skill_id"));
+            }
+        }
+        catch (SQLException exception) {
+            exception.printStackTrace();
+        }
+        return skillIds;
     }
 
     @Override

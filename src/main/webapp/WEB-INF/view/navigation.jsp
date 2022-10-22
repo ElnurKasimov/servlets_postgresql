@@ -12,7 +12,7 @@
           <li><a href="/developer/language_developers/form">List developers with certain language </a></li>
           <li><a href="/developer/level_developers/form">List developers with certain level</a></li>
           <li><a href="/developer/save/form">Add developer</a></li>
-          <li><a href="/developer/update/form">Update developer</a></li>
+          <li><a href="/developer/update_find/form">Update developer</a></li>
           <li><a href="/developer/delete/form">Delete developer</a></li>
         </ul>
       </li>

@@ -15,6 +15,8 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class ProjectService {
     private ProjectStorage projectStorage;
@@ -54,9 +56,19 @@ public class ProjectService {
         else return Optional.empty();
     }
 
+    public Optional<ProjectDto> findById(Long id) {
+        if(projectStorage.findById(id).isPresent()) {
+            return Optional.of(ProjectConverter.from(projectStorage.findById(id).get()));
+        }
+        else return Optional.empty();
+    }
 
     public List<String> getProjectsNameByDeveloperId(long id) {
         return projectStorage.getProjectsNameByDeveloperId(id);
+    }
+
+    public List<Long> getProjectIdsByDeveloperId(long id) {
+        return projectStorage.getProjectIdsByDeveloperId(id);
     }
 
     public List<ProjectDto>   getCompanyProjects(String companyName) {
@@ -218,12 +230,20 @@ public class ProjectService {
         String result = "";
         Optional<ProjectDto> projectFromDb = findByName(projectName);
         if (projectFromDb.isPresent()) {
+            relationService.deleteAllDevelopersOfProject(projectFromDb.get());
             projectStorage.delete(ProjectConverter.to(projectFromDb.get()));
+
             result = "Project " + projectFromDb.get().getProject_name() + " successfully deleted from the database";
         } else {
             result = "There is no project with such name. Please enter correct one.";
         }
         return result;
+    }
+
+    public boolean checkProjects(String[] projectsNames, String  companyName) {
+        List<String >  companyProjectsNames = getCompanyProjects(companyName).stream()
+                .map(ProjectDto::getProject_name).toList();
+        return Stream.of(projectsNames).allMatch(companyProjectsNames::contains);
     }
 
 }

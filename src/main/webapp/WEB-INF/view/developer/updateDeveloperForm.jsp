@@ -10,7 +10,7 @@
     </head>
     <body>
         <c:import url="${contextPath}/WEB-INF/view/navigation.jsp"/>
-            <form action="/project/update" method="post">
+            <form action="/developer/update" method="post">
                 <p hidden>
                       <input id="lastName" name="lastName" value =${lastName}>
                       <input  id="firstName" name="firstName" value = ${firstName}>
@@ -35,6 +35,5 @@
                  <label><input type="radio" name="level" value="junior" checked="checked">Junior</label><br>
                  <button type="submit">Update</button>
             </form>
-        <c:out value="${result}"/>
     </body>
 </html>

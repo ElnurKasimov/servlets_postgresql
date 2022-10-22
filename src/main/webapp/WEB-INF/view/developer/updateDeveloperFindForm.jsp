@@ -10,7 +10,12 @@
     </head>
     <body>
         <c:import url="${contextPath}/WEB-INF/view/navigation.jsp"/>
-        <pre>
-<c:out value="${result}"/></pre>
+            <form action="/developer/update_find" method="post">
+                <label for="lastName">Last name:</label>
+                <input type="text" id="lastName" name="lastName">
+                <label for="firstName">First name:</label>
+                <input type="text" id="firstName" name="firstName"><br>
+                <button type="submit">Find for updating</button>
+            </form>
     </body>
 </html>

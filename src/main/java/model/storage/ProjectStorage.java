@@ -34,6 +34,8 @@ public class ProjectStorage implements Storage<ProjectDao> {
     private  final String  GET_PROJECTS_NAME_BY_DEVELOPER_ID =
     "SELECT  project_name FROM project JOIN   project_developer ON project_developer.project_id = project.project_id " +
     "JOIN developer ON developer.developer_id = project_developer.developer_id WHERE developer.developer_id = ?";
+    private  final String  GET_PROJECTS_IDS_BY_DEVELOPER_ID =
+            "SELECT  project_id FROM  project_developer  WHERE developer_id = ?";
     private final String GET_PROJECT_EXPENCES =
             "SELECT SUM(salary) FROM project JOIN project_developer " +
                     "ON project.project_id = project_developer.project_id " +
@@ -77,6 +79,16 @@ public class ProjectStorage implements Storage<ProjectDao> {
 
     @Override
     public Optional<ProjectDao> findById(long id) {
+        try(Connection connection = manager.getConnection();
+            PreparedStatement statement = connection.prepareStatement(FIND_BY_ID)) {
+            statement.setLong(1, id);
+            ResultSet resultSet = statement.executeQuery();
+            ProjectDao projectDao = mapProjectDao(resultSet);
+            return Optional.ofNullable(projectDao);
+        }
+        catch (SQLException exception) {
+            exception.printStackTrace();
+        }
         return Optional.empty();
     }
 
@@ -235,16 +247,22 @@ public class ProjectStorage implements Storage<ProjectDao> {
         return projectNames;
     }
 
-    public void saveProjectDeveloperRelation(ProjectDao projectDao, DeveloperDao developerDao) {
+    public List<Long> getProjectIdsByDeveloperId (long id) {
+        List<Long> projectIds = new ArrayList<>();
         try (Connection connection = manager.getConnection();
-            PreparedStatement statement = connection.prepareStatement(INSERT_PROJECT_DEVELOPER)){
-            statement.setLong(1, projectDao.getProject_id());
-            statement.setLong(2, developerDao.getDeveloper_id());
-            statement.executeUpdate();
-        } catch (SQLException ex) {
-            ex.printStackTrace();
+            PreparedStatement statement = connection.prepareStatement(GET_PROJECTS_IDS_BY_DEVELOPER_ID)) {
+            statement.setLong(1, id);
+            ResultSet rs = statement.executeQuery();
+            while (rs.next()) {
+                projectIds.add(rs.getLong("project_id"));
+            }
         }
+        catch (SQLException exception) {
+            exception.printStackTrace();
+        }
+        return projectIds;
     }
+
     public long getProjectExpences(String name) {
         long expences = 0;
         try(Connection connection = manager.getConnection();

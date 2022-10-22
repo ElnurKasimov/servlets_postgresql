@@ -10,12 +10,13 @@
     </head>
     <body>
         <c:import url="${contextPath}/WEB-INF/view/navigation.jsp"/>
+         <c:if test="${not empty projects}">
             <form action="/developer/add_developer_relations" method="post">
-                <label for="lastName">Last name:</label>
-                <input type="text" id="lastName" name="lastName" value =${lastName}>
-                <label for="firstName">First name:</label>
-                <input type="text" id="firstName" name="firstName" value = ${firstName}><br>
-                <p> The company You choose develops projects listed below . Choose those in which developer participates.</p>
+               <p hidden>
+                     <input id="lastName" name="lastName" value =${lastName}>
+                     <input  id="firstName" name="firstName" value = ${firstName}>
+               </p>
+               <p> The company You choose develops projects listed below . Choose those in which developer participates.</p>
                 <c:forEach var = "project" items="${projects}">
                   <input type="checkbox" name="projectName" value="${project.project_name}">${project.project_name}</input><br/>
                 </c:forEach><br>
@@ -27,5 +28,12 @@
                 <label><input type="radio" name="level" value="junior" checked="checked">Junior</label><br>
                 <button type="submit">Save</button>
             </form>
+         </c:if>
+         <c:if test="${empty projects}">
+              <pre>
+The company You choose does not develop any project.
+So add some project to the company.
+Developer was added to the database without any projects and skills relations.</pre>
+         </c:if>
     </body>
 </html>

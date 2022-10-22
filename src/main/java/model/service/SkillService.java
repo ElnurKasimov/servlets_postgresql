@@ -22,13 +22,17 @@ public SkillService(SkillStorage skillStorage) {
         return SkillConverter.from(skillDao.orElseGet(() -> skillStorage.save(new SkillDao(language, level))));
     };
 
-    public SkillDto save (SkillDto skillDto) {
-        List<String> result = new ArrayList<>();
-        skillDto = SkillConverter.from(skillStorage.save(SkillConverter.to(skillDto)));
-        result.add(String.format("\tSkill %s - %s successfully added to the database",
-                skillDto.getLanguage(), skillDto.getLevel()));
-       // Output.getInstance().print(result);
-        return skillDto;
+//    public SkillDto save (SkillDto skillDto) {
+//        List<String> result = new ArrayList<>();
+//        skillDto = SkillConverter.from(skillStorage.save(SkillConverter.to(skillDto)));
+//        result.add(String.format("\tSkill %s - %s successfully added to the database",
+//                skillDto.getLanguage(), skillDto.getLevel()));
+//       // Output.getInstance().print(result);
+//        return skillDto;
+//    }
+
+    public List<Long> getSkillIdsByDeveloperId(long id) {
+        return skillStorage.getSkillIdsByDeveloperId(id);
     }
 
     public List<String > getSkillSetByDeveloperId(long id) {
