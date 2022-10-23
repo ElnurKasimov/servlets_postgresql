@@ -62,8 +62,9 @@ public class DeleteDeveloper extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String result = "";
-        String projectName = req.getParameter("projectName");
-        result = projectService.deleteProject(projectName);
+        String lastName = req.getParameter("lastName");
+        String firstName = req.getParameter("firstName");
+        result = developerService.deleteDeveloper(lastName, firstName);
         req.setAttribute("result", result);
         req.getRequestDispatcher("/WEB-INF/view/developer/deleteDeveloper.jsp").forward(req, resp);
 

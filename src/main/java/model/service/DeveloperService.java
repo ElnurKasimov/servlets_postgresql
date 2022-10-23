@@ -4,6 +4,7 @@ import model.dao.DeveloperDao;
 import model.dto.*;
 import model.service.converter.CompanyConverter;
 import model.service.converter.DeveloperConverter;
+import model.service.converter.ProjectConverter;
 import model.storage.CompanyStorage;
 import model.storage.DeveloperStorage;
 import model.storage.ProjectStorage;
@@ -160,43 +161,32 @@ public class DeveloperService {
 
         DeveloperDto updatedDeveloperDto = DeveloperConverter.from(developerStorage.update(DeveloperConverter.to(developerDtoToUpdate)));
         Set<ProjectDto> projects = Stream.of(projectsNames)
-                        .map(name -> projectService.findByName(name).get())
-                        .collect(Collectors.toSet());
+                .map(name -> projectService.findByName(name).get())
+                .collect(Collectors.toSet());
         relationService.deleteAllProjectsOfDeveloper(updatedDeveloperDto);
         relationService.saveProjectDeveloper(projects, updatedDeveloperDto);
 
         relationService.deleteAllSkillsOfDeveloper(updatedDeveloperDto);
         relationService.saveDeveloperSkill(updatedDeveloperDto, skillsDto);
 
-        return  String.format("Developer %s %s successfully updated with all necessary relations.",
+        return String.format("Developer %s %s successfully updated with all necessary relations.",
                 updatedDeveloperDto.getLastName(), updatedDeveloperDto.getFirstName());
     }
 
-    public void deleteDeveloper() {
-        System.out.println("\tEnter, please,  data for developer You want to delete.");
-        DeveloperDto developerDtoToDelete;
-        String lastName;
-        String firstName;
-        Scanner sc = new Scanner(System.in);
-        while (true) {
-            System.out.print("\tLast name : ");
-            lastName = sc.nextLine();
-            System.out.print("\tFirst name : ");
-            firstName = sc.nextLine();
-            Optional<DeveloperDao> developerDaofromDb = developerStorage.findByName(lastName, firstName);
-            if (developerDaofromDb.isPresent()) {
-                developerDtoToDelete = DeveloperConverter.from(developerDaofromDb.get());
-                break;
-            }
-            System.out.println("There is no such developer in the database. Please enter correct data");
+    public String deleteDeveloper(String lastName, String firstName) {
+        String result = "";
+        Optional<DeveloperDao> developerDaoFromDb = developerStorage.findByName(lastName, firstName);
+        if (developerDaoFromDb.isPresent()) {
+            DeveloperDto developerDtoToDelete = DeveloperConverter.from(developerDaoFromDb.get());
+            relationService.deleteDeveloperFromDeveloperSkill(developerDtoToDelete);
+            relationService.deleteDeveloperFromProjectDeveloper(developerDtoToDelete);
+            developerStorage.delete(DeveloperConverter.to(developerDtoToDelete));
+            result = String.format("Developer %s %s successfully deleted from the database with all necessary relations.",
+                    developerDtoToDelete.getLastName(), developerDtoToDelete.getFirstName());
+        } else {
+            result = "There is no such developer in the database. Please enter correct data";
         }
-        relationService.deleteDeveloperFromDeveloperSkill(developerDtoToDelete);
-        relationService.deleteDeveloperFromProjectDeveloper(developerDtoToDelete);
-        developerStorage.delete(DeveloperConverter.to(developerDtoToDelete));
-        List<String> result = new ArrayList<>();
-        result.add(String.format("Developer %s %s successfully deleted from the database.",
-                developerDtoToDelete.getLastName(), developerDtoToDelete.getFirstName()));
-
+        return result;
     }
 
 }
